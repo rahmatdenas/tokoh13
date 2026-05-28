@@ -90,34 +90,6 @@ function initMap() {
 // error code if there is an error querying WDQS. If SparqlValuesClause is not false,
 // this also updates the given query with the SparqlValuesClause value prior to
 // querying WDQS.
-function queryWdqsThenProcess(query, processEachResult, postprocessCallback) {
-
-  let promise = new Promise((resolve, reject) => {
-    let xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState !== xhr.DONE) return;
-      if (xhr.status === 200) {
-        resolve(JSON.parse(xhr.responseText));
-      }
-      else {
-        reject(xhr.status);
-      }
-    };
-    xhr.open('POST', WDQS_API_URL, true);
-    xhr.overrideMimeType('text/plain');
-    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    if (SparqlValuesClause) query = query.replace('<SPARQLVALUESCLAUSE>', SparqlValuesClause);
-    xhr.send('format=json&query=' + encodeURIComponent(query));
-  });
-
-  promise = promise.then(data => {
-    data.results.bindings.forEach(processEachResult);
-  });
-
-  if (postprocessCallback) promise = promise.then(postprocessCallback);
-
-  return promise;
-}
 
 
 // Enables the app. Should be called after the Wikidata queries have been processed.
@@ -212,7 +184,7 @@ function displayRecordDetails(qid) {
 // Given a Commons image filename and an array of class names, generates
 // a figure HTML string, returns it, and calls the Commons API to fetch
 // and insert the image attribution if needed. If the filename is false,
-// the figure element will indicate "No photo available".
+// the figure element will indicate "Belum ada foto".
 function generateFigure(filename, classNames = []) {
   if (filename) {
     // 1. Buat ID unik untuk setiap figure
@@ -236,6 +208,9 @@ function generateFigure(filename, classNames = []) {
         if (metadata.Artist) {
             artistHtml = metadata.Artist.value.trim();
             artistHtml = artistHtml.replace(/<(?!\/?a ?)[^>]+>/g, '');
+if (artistHtml.includes('Unknown author')) {
+                artistHtml = 'Tidak diketahui';
+            }
             if (artistHtml.search('href="//') >= 0) {
               artistHtml = artistHtml.replace(/href="(?:https?:)?\/\//g, 'href="https://');
             }
@@ -272,7 +247,7 @@ function generateFigure(filename, classNames = []) {
     );
   }
   else {
-    return `<figure class="${classNames.join(' ')} nodata">No photo available</figure>`;
+    return `<figure class="${classNames.join(' ')} nodata">Belum ada foto</figure>`;
   }
 }
 
@@ -302,4 +277,18 @@ function parseDate(result, keyName) {
       },
     );
   }
+}
+
+function loadJsonp(url, params, callback) {
+  let cbName = 'jsonp_cb_' + Math.round(100000 * Math.random());
+  window[cbName] = function(data) {
+    delete window[cbName];
+    document.body.removeChild(script);
+    callback(data);
+  };
+  let script = document.createElement('script');
+  let urlParams = new URLSearchParams(params);
+  urlParams.set('callback', cbName);
+  script.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + urlParams.toString();
+  document.body.appendChild(script);
 }
