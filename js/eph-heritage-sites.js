@@ -18,12 +18,12 @@ function loadPrimaryData() {
   doPreProcessing();
 
   // Membaca kedua file JSON secara serentak (paralel) agar sangat cepat
-Promise.all([
-    fetch('peta-provinsi.json?v=' + new Date().getTime()).then(res => {
+  Promise.all([
+    fetch('peta-provinsi.json').then(res => {
         if (!res.ok) throw new Error("File 'peta-provinsi.json' tidak ditemukan.");
         return res.json();
     }),
-    fetch('data-tokoh.json?v=' + new Date().getTime()).then(res => {
+    fetch('data-tokoh.json').then(res => {
         if (!res.ok) throw new Error("File 'data-tokoh.json' tidak ditemukan.");
         return res.json();
     })
