@@ -193,13 +193,10 @@ function generateFilterSelect() {
       <option value="indonesia_only">Seluruh Indonesia – ${totalIndonesia} Tokoh</option>
     `;
 
-    let sortedRegions = Object.keys(BirthplaceIndex)
-      .filter(lbl => lbl !== 'all' && lbl !== 'Luar Negeri' && lbl !== 'Indonesia (Umum)')
-      .sort((a, b) => a.localeCompare(b));
+let sortedRegions = Object.keys(BirthplaceIndex)
+      .filter(lbl => lbl !== 'all' && lbl !== 'Luar Negeri' && lbl !== 'Indonesia (Umum)' && lbl !== 'Hindia Belanda')
+      .sort((a, b) => a.localeCompare(b));
 
-    if (BirthplaceIndex['Indonesia (Umum)']) {
-      sortedRegions.push('Indonesia (Umum)');
-    }
     if (BirthplaceIndex['Luar Negeri']) {
       sortedRegions.push('Luar Negeri');
     }
