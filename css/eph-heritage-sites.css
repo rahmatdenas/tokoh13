@@ -33,9 +33,8 @@ nav li a:hover {
   color: #eaa;
 }
 
-#filter {
+.filter-box {
   position: relative;
-  width: 300px;
   border-radius: 6px;
   background-color: #f3e9e9;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='32'><polyline fill='rgb(238,170,170)' points='6,12 12,22 18,12'/><line stroke='rgb(238,170,170)' x1='0' y1='0' x2='0' y2='32' /></svg>");
@@ -43,7 +42,7 @@ nav li a:hover {
   background-repeat: no-repeat;
 }
 
-#index header select {
+.filter-box select {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -149,6 +148,7 @@ optgroup option {
 #details .designations {
   margin: 15px 0 0 0;
   padding: 0;
+  overflow: hidden;  /* TAMBAHAN BARU: Memaksa UL menghormati batas gambar */
 }
 
 #details .designations li {
@@ -156,6 +156,7 @@ optgroup option {
   list-style: none;
   padding: 0 0 15px 65px;
   min-height: 50px;
+  margin-right: 15px; /* TAMBAHAN BARU: Memberi jarak aman di sebelah kanan agar teks tidak menabrak gambar */
 }
 
 #details .designations li h3 {
@@ -233,4 +234,39 @@ optgroup option {
 
 .leaflet-popup-content-wrapper, .leaflet-popup-tip {
   background: #822;
+}
+
+.feat-btn {
+  background-color: #f3e9e9;
+  border: 1px solid #eaa;
+  border-radius: 4px;
+  padding: 5px 8px;
+  font-size: 11px;
+  color: #822;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+}
+
+.feat-btn:hover {
+  background-color: #eaa;
+  color: #fff;
+}
+
+/* Tampilan tombol saat sedang aktif (terpilih) */
+.feat-btn.active {
+  background-color: #822;
+  color: #fff;
+  border-color: #822;
+}
+
+.filter-row{
+    justify-content:space-between;
+    gap:15px;
+    margin-bottom:12px;
+}
+
+
+.filter-box select{
+    width:100%;
 }
