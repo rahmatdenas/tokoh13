@@ -454,34 +454,41 @@ let figureHtml = generateFigure(record.imageFilename);
 }
 
 function displayArticleExtract(title, elem) {
-  loadJsonp(
-    'https://id.wikipedia.org/w/api.php',
-    {
-      action    : 'query',
-      format    : 'json',
-      prop      : 'extracts',
-      exintro   : 1,
-      redirects : true,
-      titles    : title,
-    },
-    function(data) {
-      let extract = Object.values(data.query.pages)[0].extract;
+  // 1. Menggunakan Fetch modern dengan "origin=*" agar tidak diblokir keamanan (CORS)
+  let apiUrl = `https://id.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&exintro=1&redirects=true&titles=${encodeURIComponent(title)}&origin=*`;
+
+  fetch(apiUrl)
+    .then(response => response.json())
+    .then(data => {
+      let pages = data.query.pages;
+      // 2. ID Halaman Wikipedia sifatnya dinamis, jadi kita ambil urutan array pertama
+      let pageId = Object.keys(pages)[0]; 
+      let extract = pages[pageId].extract;
+
       if (extract) {
-          let paragraphs = extract.match(/<p[^]+?<\/p>/g);
+          // 3. Menyaring paragraf agar yang tampil bukan baris kosong
+          let paragraphs = extract.match(/<p[^>]*>[\s\S]*?<\/p>/g);
           let validText = paragraphs ? paragraphs.find(text => text.length > 50) : extract;
+          if (!validText) validText = extract; // fallback jika hanya ada paragraf pendek
+
           elem.innerHTML = validText +
-            '<p class="wikipedia-link">' +
-              `<a href="https://id.wikipedia.org/wiki/${encodeURIComponent(title)}">` +
-                '<img src="img/wikipedia_tiny_logo.png" alt="" />' +
-                '<span>Baca selengkapnya di Wikipedia</span>' +
+            '<p class="wikipedia-link" style="margin-top: 15px;">' +
+              `<a href="https://id.wikipedia.org/wiki/${encodeURIComponent(title)}" target="_blank" style="text-decoration: none; font-weight: bold;">` +
+                '<span>📖 Baca selengkapnya di Wikipedia</span>' +
               '</a>' +
             '</p>';
       } else {
-          elem.innerHTML = '<p>Gagal memuat cuplikan artikel.</p>';
+          elem.innerHTML = '<p><em>Cuplikan artikel belum tersedia di Wikipedia.</em></p>';
       }
+      
+      // Matikan animasi loading
       elem.classList.remove('loading');
-    }
-  );
+    })
+    .catch(error => {
+      console.error("Gagal menarik data Wikipedia:", error);
+      elem.innerHTML = '<p><em>Gagal memuat cuplikan. Periksa koneksi internet Anda.</em></p>';
+      elem.classList.remove('loading');
+    });
 }
 
 class IndexEntry {
