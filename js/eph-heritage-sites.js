@@ -33,7 +33,6 @@ function loadPrimaryData() {
 
         // 3. Foto & Wikipedia
         if (result.image && !record.imageFilename) record.imageFilename = extractImageFilename(result.image);
-        if (result.wikiTitle) record.articleTitle = decodeURIComponent(result.wikiTitle.value);
 
         // 4. Demografi (Gender)
         if (result.genderUrl) {
