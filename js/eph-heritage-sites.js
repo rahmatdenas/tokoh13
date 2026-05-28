@@ -458,8 +458,113 @@ function activateSite(qid) {
   }
 }
 
-// 10, 11, 12, dst...
-// (Anda bisa membiarkan sisa fungsi Class Record, API Wikipedia, dll seperti aslinya di bawah sini, tidak perlu diubah)
+/ 10. Live Fetch Profil & Wikipedia dari Wikidata
+function generateRecordDetails(qid) {
+  let record = Records[qid];
+
+  let titleHtml = `<h1 id="title-header-${qid}">Memuat nama...</h1>`;
+  let figureHtml = generateFigure(record.imageFilename);
+
+  let articleHtml = '<div class="article main-text loading"><div class="loader"></div></div>';
+
+  let infoHtml = '<h2>Informasi Profil</h2><ul class="designations">';
+  infoHtml += `<li><p><strong>Tempat Lahir:</strong> <span id="lokasi-${qid}">Memuat lokasi...</span> (${record.provinsiLabel})</p></li>`;
+
+  if (record.jenisKelamin) infoHtml += `<li><p><strong>Jenis Kelamin:</strong> ${record.jenisKelamin}</p></li>`;
+
+  if (record.pekerjaan.size > 0) {
+    let pkjList = Array.from(record.pekerjaan).join(', ');
+    infoHtml += `<li><p><strong>Pekerjaan:</strong> ${pkjList}</p></li>`;
+  }
+  infoHtml += '</ul>';
+
+  let panelElem = document.createElement('div');
+  panelElem.innerHTML =
+    `<a class="main-wikidata-link" href="https://www.wikidata.org/wiki/${qid}" target="_blank" title="Lihat di Wikidata">` +
+    '<img src="img/wikidata_tiny_logo.png" alt="[Lihat item Wikidata]" /></a>' +
+    titleHtml + figureHtml + articleHtml + infoHtml;
+
+  record.panelElem = panelElem;
+
+  let queryIds = qid;
+  if (record.tempatLahirQid) queryIds += `|${record.tempatLahirQid}`;
+
+  fetch(`https://www.wikidata.org/w/api.php?action=wbgetentities&ids=${queryIds}&props=labels|sitelinks&languages=id|en&format=json&origin=*`)
+    .then(res => res.json())
+    .then(data => {
+        let entPerson = data.entities[qid];
+        if (entPerson) {
+          let realName = entPerson.labels.id ? entPerson.labels.id.value : (entPerson.labels.en ? entPerson.labels.en.value : qid);
+
+          let headerEl = document.getElementById(`title-header-${qid}`);
+          if(headerEl) headerEl.textContent = realName;
+
+          let idxEl = document.getElementById(`idx-${qid}`);
+          if(idxEl) idxEl.textContent = realName;
+
+          if(record.mapMarker) record.mapMarker.setPopupContent(realName);
+          record.title = realName;
+          record.indexTitle = realName;
+
+          let articleContainer = panelElem.querySelector('.article');
+          if (entPerson.sitelinks && entPerson.sitelinks.idwiki) {
+              let wikiTitle = entPerson.sitelinks.idwiki.title;
+              displayArticleExtract(wikiTitle, articleContainer);
+          } else {
+              articleContainer.innerHTML = '<p><em>Tokoh ini belum memiliki artikel Wikipedia berbahasa Indonesia.</em></p>';
+              articleContainer.classList.remove('loading');
+          }
+        }
+
+        if (record.tempatLahirQid) {
+          let entCity = data.entities[record.tempatLahirQid];
+          if (entCity) {
+            let cityName = entCity.labels.id ? entCity.labels.id.value : (entCity.labels.en ? entCity.labels.en.value : record.tempatLahirQid);
+            let lokEl = document.getElementById(`lokasi-${qid}`);
+            if(lokEl) lokEl.textContent = cityName;
+          }
+        }
+    })
+    .catch(err => console.log("Gagal memuat API dari Wikidata", err));
+}
+
+// 11. Penarik Artikel Wikipedia
+function displayArticleExtract(title, elem) {
+  let apiUrl = `https://id.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&exintro=1&redirects=true&titles=${encodeURIComponent(title)}&origin=*`;
+
+  fetch(apiUrl)
+    .then(response => response.json())
+    .then(data => {
+      let pages = data.query.pages;
+      let pageId = Object.keys(pages)[0];
+      let extract = pages[pageId].extract;
+
+      if (extract) {
+          let paragraphs = extract.match(/<p[^>]*>[\s\S]*?<\/p>/g);
+          let validText = paragraphs ? paragraphs.find(text => text.length > 50) : extract;
+          if (!validText) validText = extract;
+
+          elem.innerHTML = validText +
+            '<p class="wikipedia-link">' +
+              `<a href="https://id.wikipedia.org/wiki/${encodeURIComponent(title)}" target="_blank">` +
+                '<img src="img/wikipedia_tiny_logo.png" alt="" />' +
+                '<span>Baca selengkapnya di Wikipedia</span>' +
+              '</a>' +
+            '</p>';
+      } else {
+          elem.innerHTML = '<p><em>Cuplikan artikel belum tersedia di Wikipedia.</em></p>';
+      }
+
+      elem.classList.remove('loading');
+    })
+    .catch(error => {
+      console.error("Gagal menarik data Wikipedia:", error);
+      elem.innerHTML = '<p><em>Gagal memuat cuplikan. Periksa koneksi internet Anda.</em></p>';
+      elem.classList.remove('loading');
+    });
+}
+
+// 12. Kelas Struktur Data
 class IndexEntry {
   constructor() {
     this.label = '';
