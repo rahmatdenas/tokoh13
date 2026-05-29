@@ -460,11 +460,15 @@ function generateRecordDetails(qid) {
   let articleHtml = '<div class="article main-text loading"><div class="loader"></div></div>';
 
   let infoHtml = '<h2>Informasi Profil</h2><ul class="designations">';
-  infoHtml += `<li><p><strong>Tempat Lahir:</strong> <span id="lokasi-${qid}">Memuat lokasi...</span> (${record.provinsiLabel})</p></li>`;
+  
+  // LANGKAH 1: Tempat gambar lokasi (container)
+  infoHtml += `<li>
+      <p><strong>Tempat Lahir:</strong> <span id="lokasi-${qid}">Memuat lokasi...</span> (${record.provinsiLabel})</p>
+      <div id="img-lokasi-${qid}" class="lokasi-img-container"></div>
+  </li>`;
 
   if (record.jenisKelamin) infoHtml += `<li><p><strong>Jenis Kelamin:</strong> ${record.jenisKelamin}</p></li>`;
 
-// PERUBAHAN: Jadikan placeholder span seperti tempat lahir
   if (record.pekerjaanQids && record.pekerjaanQids.size > 0) {
     infoHtml += `<li><p><strong>Pekerjaan:</strong> <span id="pekerjaan-${qid}">Memuat pekerjaan...</span></p></li>`;
   }
@@ -477,18 +481,18 @@ function generateRecordDetails(qid) {
     titleHtml + figureHtml + articleHtml + infoHtml;
 
   record.panelElem = panelElem;
-// Gabungkan ID tokoh dan ID tempat lahir
+
   let queryIds = qid;
   if (record.tempatLahirQid) queryIds += `|${record.tempatLahirQid}`;
 
-  // TAMBAHAN: Gabungkan semua Q-ID pekerjaan
   let arrPekerjaanQid = [];
   if (record.pekerjaanQids && record.pekerjaanQids.size > 0) {
       arrPekerjaanQid = Array.from(record.pekerjaanQids);
       queryIds += `|${arrPekerjaanQid.join('|')}`;
   }
 
-  fetch(`https://www.wikidata.org/w/api.php?action=wbgetentities&ids=${queryIds}&props=labels|sitelinks&languages=id|en&format=json&origin=*`)
+  // LANGKAH 2: Fetch dengan claims
+  fetch(`https://www.wikidata.org/w/api.php?action=wbgetentities&ids=${queryIds}&props=labels|sitelinks|claims&languages=id|en&format=json&origin=*`)
     .then(res => res.json())
     .then(data => {
         let entPerson = data.entities[qid];
@@ -520,10 +524,31 @@ function generateRecordDetails(qid) {
             let cityName = entCity.labels.id ? entCity.labels.id.value : (entCity.labels.en ? entCity.labels.en.value : record.tempatLahirQid);
             let lokEl = panelElem.querySelector(`#lokasi-${qid}`);
             if(lokEl) lokEl.textContent = cityName;
+            
+            // LANGKAH 3: Render struktur <figure> persis seperti referensi gambar utama
+            let imgLokasiEl = panelElem.querySelector(`#img-lokasi-${qid}`);
+            if (imgLokasiEl && entCity.claims && entCity.claims.P18) {
+                let imgFileName = entCity.claims.P18[0].mainsnak.datavalue.value;
+                let encodedFileName = encodeURIComponent(imgFileName);
+                
+                // URL untuk href tautan klik (halaman info file Commons)
+                let commonsFileUrl = `https://commons.wikimedia.org/wiki/File:${encodedFileName}`;
+                // URL untuk src gambar aktual (menggunakan Special:FilePath)
+                let imgUrl = `https://commons.wikimedia.org/wiki/Special:FilePath/${encodedFileName}?width=300`;
+                
+                // Membuat struktur HTML sama persis dengan yang ada di gambar referensi
+                imgLokasiEl.innerHTML = `
+                  <figure class="">
+                    <a href="${commonsFileUrl}" target="_blank">
+                      <img class="" src="${imgUrl}" alt="${cityName}" onload="this.className=''">
+                    </a>
+                    <figcaption id="caption-lokasi-${qid}">${cityName}</figcaption>
+                  </figure>
+                `;
+            }
           }
         }
 
-        // TAMBAHAN: Render label pekerjaan dari Wikidata
         if (arrPekerjaanQid.length > 0) {
             let daftarLabelPekerjaan = [];
             
@@ -531,7 +556,6 @@ function generateRecordDetails(qid) {
                 let entPkj = data.entities[pkjQid];
                 if (entPkj) {
                     let labelPkj = entPkj.labels.id ? entPkj.labels.id.value : (entPkj.labels.en ? entPkj.labels.en.value : null);
-                    // Fallback ke kamus jika Wikidata tidak punya label
                     if (!labelPkj && KAMUS_PEKERJAAN[pkjQid]) labelPkj = KAMUS_PEKERJAAN[pkjQid];
                     if (labelPkj) daftarLabelPekerjaan.push(labelPkj);
                 } else if (KAMUS_PEKERJAAN[pkjQid]) {
@@ -541,16 +565,15 @@ function generateRecordDetails(qid) {
 
             let pkjEl = panelElem.querySelector(`#pekerjaan-${qid}`);
             if (pkjEl && daftarLabelPekerjaan.length > 0) {
-                pkjEl.textContent = daftarLabelPekerjaan.join(', ');
+                const formatter = new Intl.ListFormat('id-ID', { style: 'long', type: 'conjunction' });
+                pkjEl.textContent = formatter.format(daftarLabelPekerjaan);
             } else if (pkjEl) {
-                // Fallback terakhir: gunakan isi record.pekerjaan asli jika fetch gagal total
                 pkjEl.textContent = Array.from(record.pekerjaan).join(', ');
             }
         }
     })
     .catch(err => console.log("Gagal memuat API dari Wikidata", err));
 }
-
 // 9. Penarik Artikel Wikipedia, modifikasi dari wikisocph
 function displayArticleExtract(title, elem) {
   let apiUrl = `https://id.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&exintro=1&redirects=true&titles=${encodeURIComponent(title)}&origin=*`;
