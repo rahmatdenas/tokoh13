@@ -2,6 +2,238 @@
   "results": {
     "bindings": [
       {
+    "tempatLahirQid": {
+      "value": "Q3374975"
+    },
+    "provinsiLabel": {
+      "value": "Kepulauan Riau"
+    }
+  },
+  {
+    "tempatLahirQid": {
+      "value": "Q12479734"
+    },
+    "provinsiLabel": {
+      "value": "Kepulauan Riau"
+    }
+  },
+  {
+    "tempatLahirQid": {
+      "value": "Q8144"
+    },
+    "provinsiLabel": {
+      "value": "Lampung"
+    }
+  },
+  {
+    "tempatLahirQid": {
+      "value": "Q12515068"
+    },
+    "provinsiLabel": {
+      "value": "Sumatera Selatan"
+    }
+  },
+  {
+    "tempatLahirQid": {
+      "value": "Q12504535"
+    },
+    "provinsiLabel": {
+      "value": "Sumatera Selatan"
+    }
+  },
+  {
+    "tempatLahirQid": {
+      "value": "Q4198326"
+    },
+    "provinsiLabel": {
+      "value": "Sumatera Selatan"
+    }
+  },
+  {
+    "tempatLahirQid": {
+      "value": "Q17166081"
+    },
+    "provinsiLabel": {
+      "value": "Aceh"
+    }
+  },
+  {
+    "tempatLahirQid": {
+      "value": "Q9384886"
+    },
+    "provinsiLabel": {
+      "value": "Aceh"
+    }
+  },
+  {
+    "tempatLahirQid": {
+      "value": "Q5754"
+    },
+    "provinsiLabel": {
+      "value": "Aceh"
+    }
+  },
+  {
+    "tempatLahirQid": {
+      "value": "Q9637989"
+    },
+    "provinsiLabel": {
+      "value": "Aceh"
+    }
+  },
+  {
+    "tempatLahirQid": {
+      "value": "Q12458473"
+    },
+    "provinsiLabel": {
+      "value": "Sumatera Barat"
+    }
+  },
+  {
+    "tempatLahirQid": {
+      "value": "Q13545127"
+    },
+    "provinsiLabel": {
+      "value": "Sumatera Barat"
+    }
+  },
+  {
+    "tempatLahirQid": {
+      "value": "Q8213478"
+    },
+    "provinsiLabel": {
+      "value": "Sumatera Barat"
+    }
+  },
+  {
+    "tempatLahirQid": {
+      "value": "Q1189217"
+    },
+    "provinsiLabel": {
+      "value": "Sumatera Barat"
+    }
+  },
+  {
+    "tempatLahirQid": {
+      "value": "Q4707702"
+    },
+    "provinsiLabel": {
+      "value": "Sumatera Barat"
+    }
+  },
+  {
+    "tempatLahirQid": {
+      "value": "Q12475433"
+    },
+    "provinsiLabel": {
+      "value": "Sumatera Utara"
+    }
+  },
+  {
+    "tempatLahirQid": {
+      "value": "Q4198974"
+    },
+    "provinsiLabel": {
+      "value": "Sumatera Utara"
+    }
+  },
+  {
+    "tempatLahirQid": {
+      "value": "Q12515559"
+    },
+    "provinsiLabel": {
+      "value": "Sumatera Utara"
+    }
+  },
+  {
+    "tempatLahirQid": {
+      "value": "Q12470817"
+    },
+    "provinsiLabel": {
+      "value": "Sumatera Utara"
+    }
+  },
+  {
+    "tempatLahirQid": {
+      "value": "Q14646085"
+    },
+    "provinsiLabel": {
+      "value": "Sumatera Utara"
+    }
+  },
+  {
+    "tempatLahirQid": {
+      "value": "Q4191017"
+    },
+    "provinsiLabel": {
+      "value": "Sumatera Utara"
+    }
+  },
+  {
+    "tempatLahirQid": {
+      "value": "Q12503991"
+    },
+    "provinsiLabel": {
+      "value": "Sumatera Utara"
+    }
+  },
+  {
+    "tempatLahirQid": {
+      "value": "Q12507398"
+    },
+    "provinsiLabel": {
+      "value": "Sumatera Utara"
+    }
+  },
+  {
+    "tempatLahirQid": {
+      "value": "Q5808"
+    },
+    "provinsiLabel": {
+      "value": "Sumatera Utara"
+    }
+  },
+  {
+    "tempatLahirQid": {
+      "value": "Q12507198"
+    },
+    "provinsiLabel": {
+      "value": "Sumatera Utara"
+    }
+  },
+  {
+    "tempatLahirQid": {
+      "value": "Q12485240"
+    },
+    "provinsiLabel": {
+      "value": "Sumatera Utara"
+    }
+  },
+  {
+    "tempatLahirQid": {
+      "value": "Q12477979"
+    },
+    "provinsiLabel": {
+      "value": "Sumatera Utara"
+    }
+  },
+  {
+    "tempatLahirQid": {
+      "value": "Q12473973"
+    },
+    "provinsiLabel": {
+      "value": "Sumatera Utara"
+    }
+  },
+  {
+    "tempatLahirQid": {
+      "value": "Q4250365"
+    },
+    "provinsiLabel": {
+      "value": "Sumatera Utara"
+    }
+  },
+      {
         "tempatLahirQid": {
           "value": "Q1883729"
         },
