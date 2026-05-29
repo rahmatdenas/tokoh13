@@ -11864,6 +11864,30 @@
     "provinsiLabel": {
       "value": "Nusa Tenggara Timur"
     }
+  },
+  {
+    "tempatLahirQid": {
+      "value": "Q12519958"
+    },
+    "provinsiLabel": {
+      "value": "Kepulauan Riau"
+    }
+  },
+  {
+    "tempatLahirQid": {
+      "value": "Q25991365"
+    },
+    "provinsiLabel": {
+      "value": "Papua Pegunungan"
+    }
+  },
+  {
+    "tempatLahirQid": {
+      "value": "Q12509188"
+    },
+    "provinsiLabel": {
+      "value": "Sulawesi Utara"
+    }
   }
     ]
   }
