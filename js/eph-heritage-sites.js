@@ -560,17 +560,15 @@ function generateRecordDetails(qid) {
                 }
             });
 
-  let pkjEl = panelElem.querySelector(`#pekerjaan-${qid}`);
-            if (pkjEl) {
-let tautanSunting = ` <a href="https://www.wikidata.org/wiki/${qid}#P106" target="_blank" class="sunting-link" title="Sunting pekerjaan di Wikidata">[sunting]</a>`;
-              if (daftarLabelPekerjaan.length > 0) {
-                    const formatter = new Intl.ListFormat('id-ID', { style: 'long', type: 'conjunction' });
-                    pkjEl.innerHTML = formatter.format(daftarLabelPekerjaan) + tautanSunting;
-                } else {
-                    pkjEl.innerHTML = Array.from(record.pekerjaan).join(', ') + tautanSunting;
-                }
-            }
-        }
+let pkjEl = panelElem.querySelector(`#pekerjaan-${qid}`);
+if (pkjEl) {
+    let tautanSunting = ` <a href="https://www.wikidata.org/wiki/${qid}#P106" target="_blank" class="sunting-link" title="Sunting pekerjaan di Wikidata">[sunting]</a>`;
+    if (daftarLabelPekerjaan.length > 0) {
+        pkjEl.innerHTML = daftarLabelPekerjaan.join(', ') + tautanSunting;
+    } else {
+        pkjEl.innerHTML = Array.from(record.pekerjaan).join(', ') + tautanSunting;
+    }
+}
     })
     .catch(err => console.log("Gagal memuat API dari Wikidata", err));
 }
