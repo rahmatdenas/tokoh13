@@ -436,9 +436,22 @@ function applyIntersectionFilter() {
     return a.indexTitle.localeCompare(b.indexTitle);
   });
 
+let searchInput = document.getElementById('search-tokoh');
+  let keywordCari = searchInput ? searchInput.value.toLowerCase() : '';
+
   validRecords.forEach(record => {
     if (record.mapMarker) validMarkers.push(record.mapMarker);
-    if (record.indexLi && ol) ol.appendChild(record.indexLi);
+    
+    if (record.indexLi && ol) {
+        // Terapkan filter pencarian teks saat indeks dirakit ulang
+        if (keywordCari === '' || record.indexTitle.toLowerCase().includes(keywordCari)) {
+            record.indexLi.style.display = '';
+        } else {
+            record.indexLi.style.display = 'none';
+        }
+        
+        ol.appendChild(record.indexLi);
+    }
   });
 
   if (validMarkers.length > 0) {
@@ -448,6 +461,24 @@ function applyIntersectionFilter() {
        Map.fitBounds(bounds);
     }
   }
+}
+
+// Fitur Pencarian Teks oleh Denas
+let inputPencarian = document.getElementById('search-tokoh');
+if (inputPencarian) {
+  inputPencarian.addEventListener('input', function() {
+    let keyword = this.value.toLowerCase();
+    let daftarLi = document.querySelectorAll('#index-list li');
+
+    daftarLi.forEach(li => {
+      let namaTokoh = li.textContent.toLowerCase();
+      if (namaTokoh.includes(keyword)) {
+        li.style.display = '';
+      } else {
+        li.style.display = 'none';
+      }
+    });
+  });
 }
 
 // 8. Live Fetch Profil & Wikipedia dari Wikidata, modifikasi dari wikisocph
