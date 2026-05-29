@@ -4595,6 +4595,14 @@
       },
       {
         "tempatLahirQid": {
+          "value": "Q119947627"
+        },
+        "provinsiLabel": {
+          "value": "Sumatera Utara"
+        }
+      },
+      {
+        "tempatLahirQid": {
           "value": "Q5911"
         },
         "provinsiLabel": {
