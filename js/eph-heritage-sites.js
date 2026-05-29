@@ -462,7 +462,7 @@ function generateRecordDetails(qid) {
   let infoHtml = '<h2>Informasi Profil</h2>';
   infoHtml += `<div id="img-lokasi-${qid}" class="lokasi-img-container"></div>`;
   infoHtml += '<ul class="designations">';
-  infoHtml += `<li><p><strong>Lahir di:</strong> <span id="lokasi-${qid}">Memuat lokasi...</span> (${record.provinsiLabel})</p></li>`;
+  infoHtml += `<li><p><strong>Lahir:</strong> <span id="lokasi-${qid}">Memuat lokasi...</span> (${record.provinsiLabel})</p></li>`;
 
   if (record.jenisKelamin) infoHtml += `<li><p><strong>Jenis kelamin:</strong> ${record.jenisKelamin}</p></li>`;
 
